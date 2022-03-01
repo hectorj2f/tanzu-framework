@@ -28,8 +28,8 @@ vsphereCPI:
     username: #@ data.values.NSXT_USERNAME
     password: #@ data.values.NSXT_PASSWORD
     host: #@ data.values.NSXT_MANAGER_HOST
-    insecureFlag: #@ data.values.NSXT_ALLOW_UNVERIFIED_SSL
-    remoteAuth: #@ data.values.NSXT_REMOTE_AUTH
+    insecure: #@ data.values.NSXT_ALLOW_UNVERIFIED_SSL
+    remoteAuthEnabled: #@ data.values.NSXT_REMOTE_AUTH
     vmcAccessToken: #@ data.values.NSXT_VMC_ACCESS_TOKEN
     vmcAuthHost: #@ data.values.NSXT_VMC_AUTH_HOST
     clientCertKeyData: #@ data.values.NSXT_CLIENT_CERT_KEY_DATA
