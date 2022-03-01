@@ -155,7 +155,6 @@ func GetPinnipedKubeconfig(cluster *clientcmdapi.Cluster, pinnipedInfo *tkgutils
 	// configure concierge
 	execConfig.Args = append(execConfig.Args,
 		"--enable-concierge",
-		"--concierge-authenticator-name="+ConciergeAuthenticatorName,
 		"--concierge-authenticator-type="+ConciergeAuthenticatorType,
 		"--concierge-is-cluster-scoped="+strconv.FormatBool(pinnipedInfo.Data.ConciergeIsClusterScoped),
 		"--concierge-endpoint="+cluster.Server,
@@ -163,8 +162,19 @@ func GetPinnipedKubeconfig(cluster *clientcmdapi.Cluster, pinnipedInfo *tkgutils
 		"--issuer="+pinnipedInfo.Data.Issuer, // configure OIDC
 		"--scopes="+PinnipedOIDCScopes,
 		"--ca-bundle-data="+pinnipedInfo.Data.IssuerCABundle,
-		"--request-audience="+audience,
 	)
+	// FIXME: Added env variable by Hector for TAP cluster on vanilla kubernetes
+	if os.Getenv("TANZU_CLI_PINNIPED_AUTHENTICATOR_NAME") != "" {
+		execConfig.Args = append(execConfig.Args, "--concierge-authenticator-name="+os.Getenv("TANZU_CLI_PINNIPED_AUTHENTICATOR_NAME"))
+	} else {
+		execConfig.Args = append(execConfig.Args, "--concierge-authenticator-name="+ConciergeAuthenticatorName)
+	}
+	// FIXME: Added env variable by Hector for TAP cluster on vanilla kubernetes
+	if os.Getenv("TANZU_CLI_PINNIPED_REQUEST_AUDIENCE") != "" {
+		execConfig.Args = append(execConfig.Args, "--request-audience="+os.Getenv("TANZU_CLI_PINNIPED_REQUEST_AUDIENCE"))
+	} else {
+		execConfig.Args = append(execConfig.Args, "--request-audience="+audience)
+	}
 
 	if !pinnipedInfo.Data.ConciergeIsClusterScoped {
 		execConfig.Args = append(execConfig.Args, "--concierge-namespace="+ConciergeNamespace)
